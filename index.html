@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TuteDude JS Assignment</title>
   <style>
-    /* ── Reset & Base ── */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -13,7 +12,6 @@
       background: #fff;
     }
 
-    /* ── Top Header Bar ── */
     header {
       width: 100%;
       background: #f1f1f1;
@@ -24,7 +22,6 @@
       color: #333;
     }
 
-    /* ── Color Boxes Section ── */
     .color-section {
       display: flex;
       justify-content: center;
@@ -42,21 +39,18 @@
       font-size: 15px;
       color: #555;
       cursor: pointer;
-      background-color: #fff;   /* default = white/empty */
+      background-color: #fff;
       user-select: none;
     }
 
-    /* When clicked, text turns white for dark boxes */
     .color-box.active {
       color: #fff;
     }
 
-    /* Yellow text stays dark */
     .color-box.active.yellow-box {
       color: #333;
     }
 
-    /* ── Greet Section ── */
     .greet-section {
       display: flex;
       justify-content: center;
@@ -87,26 +81,21 @@
 </head>
 <body>
 
-  <!-- Header: shows greeting -->
   <header id="greeting">Hello</header>
 
-  <!-- Color Boxes -->
   <div class="color-section">
-    <div class="color-box" id="box-red"    onclick="toggleColor(this, 'red',    false)">Red</div>
-    <div class="color-box" id="box-blue"   onclick="toggleColor(this, 'blue',   false)">Blue</div>
-    <div class="color-box" id="box-green"  onclick="toggleColor(this, 'green',  false)">Green</div>
+    <div class="color-box" id="box-red" onclick="toggleColor(this, 'red', false)">Red</div>
+    <div class="color-box" id="box-blue" onclick="toggleColor(this, 'blue', false)">Blue</div>
+    <div class="color-box" id="box-green" onclick="toggleColor(this, 'green', false)">Green</div>
     <div class="color-box yellow-box" id="box-yellow" onclick="toggleColor(this, 'yellow', true)">Yellow</div>
   </div>
 
-  <!-- Greet Section -->
   <div class="greet-section">
     <input type="text" id="nameInput" placeholder="Enter your name..." />
     <button onclick="greetUser()">Greet</button>
   </div>
 
   <script>
-    // ── Greet Function ──
-    // Reads the name input and updates the header
     function greetUser() {
       const name = document.getElementById('nameInput').value.trim();
       const greeting = document.getElementById('greeting');
@@ -118,29 +107,22 @@
       }
     }
 
-    // Allow pressing Enter key to greet
     document.getElementById('nameInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') greetUser();
     });
 
-    // ── Color Toggle Function ──
-    // Clicking a box fills it with its color; clicking again resets to white
     function toggleColor(box, color, isYellow) {
       if (box.classList.contains('active')) {
-        // Already colored → reset to white
         box.style.backgroundColor = '#fff';
         box.style.color = '#555';
         box.classList.remove('active');
       } else {
-        // Not colored → fill with color
         box.style.backgroundColor = color;
         box.classList.add('active');
 
         if (isYellow) {
-          // Yellow box → keep text dark
           box.style.color = '#333';
         } else {
-          // Dark color boxes → white text
           box.style.color = '#fff';
         }
       }
