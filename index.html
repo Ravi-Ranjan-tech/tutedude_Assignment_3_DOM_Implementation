@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TuteDude JS Assignment</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: Arial, sans-serif;
@@ -41,22 +45,25 @@
       cursor: pointer;
       background-color: #fff;
       user-select: none;
+      transition: background-color 0.2s ease;
     }
 
-    .color-box.active {
-      color: #fff;
-    }
-
-    .color-box.active.yellow-box {
-      color: #333;
-    }
+    .color-box[data-color="red"].active    { background-color: red;    color: #fff; }
+    .color-box[data-color="blue"].active   { background-color: blue;   color: #fff; }
+    .color-box[data-color="green"].active  { background-color: green;  color: #fff; }
+    .color-box[data-color="yellow"].active { background-color: yellow; color: #333; }
 
     .greet-section {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       margin-top: 80px;
+    }
+
+    .greet-row {
+      display: flex;
+      gap: 8px;
     }
 
     .greet-section input {
@@ -64,6 +71,10 @@
       font-size: 14px;
       border: 1px solid #aaa;
       width: 200px;
+    }
+
+    .greet-section input.input-error {
+      border-color: red;
     }
 
     .greet-section button {
@@ -77,6 +88,12 @@
     .greet-section button:hover {
       background: #d0d0d0;
     }
+
+    .error-msg {
+      font-size: 12px;
+      color: red;
+      min-height: 16px;
+    }
   </style>
 </head>
 <body>
@@ -84,49 +101,70 @@
   <header id="greeting">Hello</header>
 
   <div class="color-section">
-    <div class="color-box" id="box-red" onclick="toggleColor(this, 'red', false)">Red</div>
-    <div class="color-box" id="box-blue" onclick="toggleColor(this, 'blue', false)">Blue</div>
-    <div class="color-box" id="box-green" onclick="toggleColor(this, 'green', false)">Green</div>
-    <div class="color-box yellow-box" id="box-yellow" onclick="toggleColor(this, 'yellow', true)">Yellow</div>
+    <div class="color-box" data-color="red">Red</div>
+    <div class="color-box" data-color="blue">Blue</div>
+    <div class="color-box" data-color="green">Green</div>
+    <div class="color-box" data-color="yellow">Yellow</div>
   </div>
 
   <div class="greet-section">
-    <input type="text" id="nameInput" placeholder="Enter your name..." />
-    <button onclick="greetUser()">Greet</button>
+    <div class="greet-row">
+      <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="50" autocomplete="off" />
+      <button id="greetBtn">Greet</button>
+    </div>
+    <span class="error-msg" id="errorMsg"></span>
   </div>
 
   <script>
-    function greetUser() {
-      const name = document.getElementById('nameInput').value.trim();
-      const greeting = document.getElementById('greeting');
+    'use strict';
 
-      if (name !== '') {
-        greeting.textContent = 'Hello, ' + name;
-      } else {
-        greeting.textContent = 'Hello';
+    const nameInput = document.getElementById('nameInput');
+    const greetBtn  = document.getElementById('greetBtn');
+    const greeting  = document.getElementById('greeting');
+    const errorMsg  = document.getElementById('errorMsg');
+
+    const namePattern = /^[A-Za-z\s'\-]{2,50}$/;
+
+    document.querySelectorAll('.color-box').forEach(function(box) {
+      box.addEventListener('click', function() {
+        box.classList.toggle('active');
+      });
+    });
+
+    function greetUser() {
+      const name = nameInput.value.trim();
+
+      if (name === '') {
+        showError('Name cannot be empty.');
+        return;
       }
+
+      if (!namePattern.test(name)) {
+        showError('Only letters, spaces, hyphens and apostrophes allowed (min 2 chars).');
+        return;
+      }
+
+      clearError();
+      greeting.textContent = 'Hello, ' + name;
     }
 
-    document.getElementById('nameInput').addEventListener('keypress', function(e) {
+    function showError(msg) {
+      nameInput.classList.add('input-error');
+      errorMsg.textContent = msg;
+    }
+
+    function clearError() {
+      nameInput.classList.remove('input-error');
+      errorMsg.textContent = '';
+    }
+
+    greetBtn.addEventListener('click', greetUser);
+
+    nameInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') greetUser();
     });
 
-    function toggleColor(box, color, isYellow) {
-      if (box.classList.contains('active')) {
-        box.style.backgroundColor = '#fff';
-        box.style.color = '#555';
-        box.classList.remove('active');
-      } else {
-        box.style.backgroundColor = color;
-        box.classList.add('active');
-
-        if (isYellow) {
-          box.style.color = '#333';
-        } else {
-          box.style.color = '#fff';
-        }
-      }
-    }
+    nameInput.addEventListener('input', clearError);
   </script>
 
 </body>
